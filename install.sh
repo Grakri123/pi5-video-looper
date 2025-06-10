@@ -12,7 +12,12 @@ fi
 
 echo "Installing dependencies..."
 echo "=========================="
-apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv python3-rpi.gpio python3-dev python3-gpiozero
+# First update and install system packages
+apt update
+apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv
+apt -y install python3-dev python3-setuptools
+apt -y install python3-rpi.gpio python3-pigpio python3-gpiozero
+apt -y install raspi-gpio pigpio
 
 if [ "$*" != "no_hello_video" ]
 then
@@ -43,7 +48,12 @@ mkdir -p /home/KT/video # create default video directory
 # Create group if it doesn't exist and set ownership
 groupadd -f KT
 usermod -a -G KT KT
+usermod -a -G gpio KT
 chown -R KT:KT /home/KT/video
+
+# Start GPIO daemon
+systemctl enable pigpiod
+systemctl start pigpiod
 
 # Create and activate virtual environment
 VENV_PATH="/home/KT/video_looper_env"
@@ -53,6 +63,7 @@ chown -R KT:KT $VENV_PATH
 # Activate virtual environment and install packages
 . $VENV_PATH/bin/activate
 pip3 install setuptools
+pip3 install RPi.GPIO pigpio
 python3 setup.py install --force
 deactivate
 
@@ -66,6 +77,7 @@ autostart=true
 autorestart=true
 stdout_logfile=/var/log/video_looper.log
 redirect_stderr=true
+environment=PYTHONPATH="/usr/lib/python3/dist-packages:%(ENV_PYTHONPATH)s"
 EOF
 
 cp ./assets/video_looper.ini /boot/video_looper.ini
