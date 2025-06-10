@@ -38,12 +38,12 @@ echo "=================================="
 cd "$(dirname "$0")"
 
 mkdir -p /mnt/usbdrive0 # This is very important if you put your system in readonly after
-mkdir -p /home/KI/video # create default video directory
+mkdir -p /home/KT/video # create default video directory
 
 # Create group if it doesn't exist and set ownership
-groupadd -f KI
-usermod -a -G KI KI
-chown -R KI:KI /home/KI/video
+groupadd -f KT
+usermod -a -G KT KT
+chown -R KT:KT /home/KT/video
 
 pip3 install setuptools
 python3 setup.py install --force
