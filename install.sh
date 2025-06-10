@@ -15,12 +15,11 @@ echo "=========================="
 apt update
 apt -y install python3 python3-pip python3-venv python3-pygame supervisor mpv ntfs-3g exfat-fuse
 apt -y install python3-dev python3-setuptools
-apt -y install python3-rpi.gpio python3-pigpio python3-gpiozero
-apt -y install raspi-gpio pigpio
 
-# Start GPIO daemon
-systemctl enable pigpiod
-systemctl start pigpiod
+# Try to install GPIO packages but don't fail if they're not available
+echo "Attempting to install GPIO support (optional)..."
+apt -y install python3-rpi.gpio python3-pigpio python3-gpiozero || true
+apt -y install raspi-gpio pigpio || true
 
 echo "Installing video_looper program..."
 echo "=================================="
@@ -35,7 +34,7 @@ mkdir -p /home/KT/video
 # Create group if it doesn't exist and set ownership
 groupadd -f KT
 usermod -a -G KT KT
-usermod -a -G gpio KT
+usermod -a -G gpio KT || true
 chown -R KT:KT /home/KT/video
 
 # Create and activate virtual environment
@@ -47,7 +46,8 @@ chown -R KT:KT $VENV_PATH
 su - KT << EOF
 source $VENV_PATH/bin/activate
 python3 -m pip install --upgrade pip setuptools wheel
-python3 -m pip install .
+# Try to install with GPIO support, fall back to basic install if it fails
+python3 -m pip install ".[gpio]" || python3 -m pip install .
 deactivate
 EOF
 
@@ -73,6 +73,10 @@ echo "==========================================="
 # Ensure log file exists and has correct permissions
 touch /var/log/video_looper.log
 chown KT:KT /var/log/video_looper.log
+
+# Try to start GPIO daemon but don't fail if it doesn't work
+systemctl enable pigpiod || true
+systemctl start pigpiod || true
 
 # Restart supervisor
 systemctl restart supervisor
