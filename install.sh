@@ -12,7 +12,7 @@ fi
 
 echo "Installing dependencies..."
 echo "=========================="
-apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv
+apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv python3-rpi.gpio python3-dev
 
 if [ "$*" != "no_hello_video" ]
 then
@@ -52,7 +52,7 @@ chown -R KT:KT $VENV_PATH
 
 # Activate virtual environment and install packages
 . $VENV_PATH/bin/activate
-pip3 install setuptools
+pip3 install setuptools RPi.GPIO rpi-gpio
 python3 setup.py install --force
 deactivate
 
