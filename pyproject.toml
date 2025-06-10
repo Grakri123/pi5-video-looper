@@ -1,13 +1,17 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "Adafruit_Video_Looper"
+version = "1.0.19"
 description = "Modern video looper for Raspberry Pi 5"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "GNU GPLv2"}
+authors = [
+    {name = "Tony DiCola", email = "tdicola@adafruit.com"}
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -31,4 +35,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["Adafruit_Video_Looper"] 
+packages = ["Adafruit_Video_Looper"]
+
+[project.scripts]
+video_looper = "Adafruit_Video_Looper.video_looper:main" 
