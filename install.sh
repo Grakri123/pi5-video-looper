@@ -12,7 +12,7 @@ fi
 
 echo "Installing dependencies..."
 echo "=========================="
-apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv python3-rpi.gpio python3-dev
+apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv python3-rpi.gpio python3-dev python3-gpiozero
 
 if [ "$*" != "no_hello_video" ]
 then
@@ -47,12 +47,12 @@ chown -R KT:KT /home/KT/video
 
 # Create and activate virtual environment
 VENV_PATH="/home/KT/video_looper_env"
-python3 -m venv $VENV_PATH
+python3 -m venv $VENV_PATH --system-site-packages
 chown -R KT:KT $VENV_PATH
 
 # Activate virtual environment and install packages
 . $VENV_PATH/bin/activate
-pip3 install setuptools RPi.GPIO rpi-gpio
+pip3 install setuptools
 python3 setup.py install --force
 deactivate
 
