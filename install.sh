@@ -9,7 +9,6 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-
 echo "Installing dependencies..."
 echo "=========================="
 # First update and install system packages
@@ -62,9 +61,10 @@ chown -R KT:KT $VENV_PATH
 
 # Activate virtual environment and install packages
 . $VENV_PATH/bin/activate
-pip3 install setuptools
+pip3 install --upgrade pip setuptools wheel
 pip3 install RPi.GPIO pigpio
-python3 setup.py install --force
+# Install the video looper package using pip in editable mode
+pip3 install -e .
 deactivate
 
 # Create service file for supervisor
