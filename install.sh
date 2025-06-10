@@ -77,7 +77,7 @@ autostart=true
 autorestart=true
 stdout_logfile=/var/log/video_looper.log
 redirect_stderr=true
-environment=PYTHONPATH="/usr/lib/python3/dist-packages:%(ENV_PYTHONPATH)s"
+environment=PYTHONPATH=/usr/lib/python3/dist-packages:%(ENV_PYTHONPATH)s
 EOF
 
 cp ./assets/video_looper.ini /boot/video_looper.ini
