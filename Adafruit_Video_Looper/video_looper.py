@@ -16,7 +16,6 @@ import threading
 from datetime import datetime
 import RPi.GPIO as GPIO
 
-from .alsa_config import parse_hw_device
 from .model import Playlist, Movie
 from .playlist_builders import build_playlist_m3u
 
@@ -37,7 +36,7 @@ from .playlist_builders import build_playlist_m3u
 #   for the two provided file readers and their public interface.
 #
 # - Similarly a video player modules needs to define a top level create_player
-#   function that takes in configuration.  See omxplayer.py and hello_video.py
+#   function that takes in configuration.  See mpv.py and hello_video.py
 #   for the two provided video players and their public interface.
 #
 # - Future file readers and video players can be provided and referenced in the
@@ -92,16 +91,6 @@ class VideoLooper:
         self._player = self._load_player()
         self._reader = self._load_file_reader()
         self._playlist = None
-        # Load ALSA hardware configuration.
-        self._alsa_hw_device = parse_hw_device(self._config.get('alsa', 'hw_device'))
-        self._alsa_hw_vol_control = self._config.get('alsa', 'hw_vol_control')
-        self._alsa_hw_vol_file = self._config.get('alsa', 'hw_vol_file')
-        # default ALSA hardware volume (volume will not be changed)
-        self._alsa_hw_vol = None
-        # Load sound volume file name value
-        self._sound_vol_file = self._config.get('omxplayer', 'sound_vol_file')
-        # default value to 0 millibels (omxplayer)
-        self._sound_vol = 0
         # Set other static internal state.
         self._extensions = '|'.join(self._player.supported_extensions())
         self._small_font = pygame.font.Font(None, 50)

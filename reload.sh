@@ -6,5 +6,8 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-# reload settings by restarting the video_looper
-supervisorctl restart video_looper
+# Restart the supervisor service to reload the video looper
+echo "Restarting video looper..."
+service supervisor restart
+
+echo "Done! Video looper has been restarted."
