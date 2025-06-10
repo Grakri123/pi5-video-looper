@@ -12,7 +12,7 @@ fi
 
 echo "Installing dependencies..."
 echo "=========================="
-apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse
+apt update && apt -y install python3 python3-pip python3-pygame supervisor mpv ntfs-3g exfat-fuse python3-venv
 
 if [ "$*" != "no_hello_video" ]
 then
@@ -45,15 +45,33 @@ groupadd -f KT
 usermod -a -G KT KT
 chown -R KT:KT /home/KT/video
 
+# Create and activate virtual environment
+VENV_PATH="/home/KT/video_looper_env"
+python3 -m venv $VENV_PATH
+chown -R KT:KT $VENV_PATH
+
+# Activate virtual environment and install packages
+. $VENV_PATH/bin/activate
 pip3 install setuptools
 python3 setup.py install --force
+deactivate
+
+# Create service file for supervisor
+cat > /etc/supervisor/conf.d/video_looper.conf << EOF
+[program:video_looper]
+command=$VENV_PATH/bin/python3 -m Adafruit_Video_Looper.video_looper
+directory=/home/KT
+user=KT
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/video_looper.log
+redirect_stderr=true
+EOF
 
 cp ./assets/video_looper.ini /boot/video_looper.ini
 
 echo "Configuring video_looper to run on start..."
 echo "==========================================="
-
-cp ./assets/video_looper.conf /etc/supervisor/conf.d/
 
 service supervisor restart
 
